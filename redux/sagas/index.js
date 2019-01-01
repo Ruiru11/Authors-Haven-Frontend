@@ -4,13 +4,24 @@ import { watchLogin } from "./auth/login";
 import { watchSignup } from "./auth/signup";
 import { watchForgotPass } from "./auth/forgotpassword";
 import { watchListPostPass } from "./blog/posts";
+import { watchlikePostPass } from "./blog/likePost";
+import { watchGetOnePostPass } from "./blog/onePost";
+import { watchCommentFetchPass } from "./blog/comments";
+import { watchPostCommentPass } from "./blog/postComment";
+import { watchProfile } from "./profile/profile";
+import { watchgetProflePass } from "./profile/getProfile";
 
 export default function* root() {
-  console.log("root saga is called");
   yield all([
     fork(watchLogin),
     fork(watchSignup),
     fork(watchForgotPass),
-    fork(watchListPostPass)
+    fork(watchListPostPass),
+    fork(watchlikePostPass),
+    fork(watchGetOnePostPass),
+    fork(watchCommentFetchPass),
+    fork(watchPostCommentPass),
+    fork(watchProfile),
+    fork(watchgetProflePass)
   ]);
 }

@@ -1,25 +1,22 @@
 import Toast from "react-native-toast-native";
 import { Platform } from "react-native";
 import { put, call, takeEvery } from "redux-saga/effects";
-import { GETONEPOST } from "../../../constants/blog/onePost";
+import { GET_ONEPOST } from "../../../constants/blog/onePost";
 import {
   getOnePostsuccess,
   getOnePostfailure
 } from "../../actions/blog/onePost";
 import api from "../../../utils/request";
 
-export function* getOnePostAsync() {
+export function* getOnePostAsync({ payload }) {
   try {
-    const response = yield call(api.onePost());
-    console.log("respnse????", response);
+    const response = yield call(api.getPost, payload);
     const post = response.data;
-    yield put(getOnePostsuccess({ type: "GETONEPOST_SUCCESS", post }));
+    yield put(getOnePostsuccess({ type: "GET_ONEPOST_SUCCESS", post }));
   } catch (error) {
-    console.log("error????", error);
-
     yield put(
       getOnePostfailure({
-        type: "GETONEPOST_FAILURE",
+        type: "GET_ONEPOST_FAILURE",
         errors: error.request.response.message
       })
     );
@@ -27,5 +24,5 @@ export function* getOnePostAsync() {
 }
 
 export function* watchGetOnePostPass() {
-  yield takeEvery(GETONEPOST, getOnePostAsync);
+  yield takeEvery(GET_ONEPOST, getOnePostAsync);
 }

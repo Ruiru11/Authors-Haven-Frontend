@@ -16,15 +16,15 @@ import DashboardScreen from "./components/DashBoardScreen";
 import Feed from "./components/Feed";
 import News from "./components/News";
 import Settings from "./components/Settings";
-import YourSettings from "./components/YourSettings";
+import ProfilePage from "./components/profile";
 import Login from "./components/Login";
 import Sigup from "./components/SignUp";
 import ForgotPassword from "./components/forgotPassword";
 import OnePost from "./components/OnePost";
+import ProfileCreate from "./components/profileCreate";
 
 export default class myapp extends Component {
   render() {
-    console.log(store, "here store");
     return (
       <Provider store={store}>
         <Root>
@@ -60,9 +60,10 @@ const DashBoardStackNavigator = createStackNavigator(
       return {
         headerLeft: (
           <Icon
-            name="rocket"
+            name="home"
             type="MaterialIcons"
-            size={30}
+            color="black"
+            size={50}
             onPress={() => navigation.openDrawer()}
           />
         )
@@ -72,8 +73,8 @@ const DashBoardStackNavigator = createStackNavigator(
 );
 
 const AppDrawerNavigator = createDrawerNavigator({
-  DashboardOne: { screen: DashBoardStackNavigator },
-  YourSettings: { screen: YourSettings }
+  Home: { screen: DashBoardStackNavigator },
+  Profile: { screen: ProfilePage }
 });
 
 const AppswitchNavigator = createSwitchNavigator({
@@ -82,7 +83,8 @@ const AppswitchNavigator = createSwitchNavigator({
   Login: { screen: Login },
   Sigup: { screen: Sigup },
   ForgotPassword: { screen: ForgotPassword },
-  OnePost: { screen: OnePost }
+  OnePost: { screen: OnePost },
+  ProfileCreate: { screen: ProfileCreate }
 });
 
 const Appcontainer = createAppContainer(AppswitchNavigator);

@@ -16,9 +16,18 @@ import {
   SafeAreaView,
   Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView
+  TouchableHighlight
 } from "react-native";
-import { Label } from "native-base";
+import {
+  Container,
+  Header,
+  Content,
+  Form,
+  Item,
+  Input,
+  Label,
+  Icon
+} from "native-base";
 
 class Login extends Component {
   static propTypes = {
@@ -31,7 +40,8 @@ class Login extends Component {
     email: "",
     password: "",
     passwordError: false,
-    emailError: false
+    emailError: false,
+    passworHidden: true
   };
 
   componentDidMount() {
@@ -40,7 +50,6 @@ class Login extends Component {
 
   _bootstrapAsync = async () => {
     const token = await getToken();
-    console.log(token, "this is our token");
     const {
       navigation: { navigate }
     } = this.props;
@@ -91,9 +100,16 @@ class Login extends Component {
     }
   };
 
+  toggleShowPassword = () => {
+    const { passworHidden } = this.state;
+    this.setState({
+      passworHidden: !passworHidden
+    });
+  };
+
   render() {
     const { navigation } = this.props;
-    const { passwordError, emailError } = this.state;
+    const { passwordError, emailError, passworHidden } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -133,36 +149,58 @@ class Login extends Component {
                     fontWeight: "bold",
                     marginTop: -10,
                     fontStyle: "italic",
-                    fontFamily: "Times New Roman"
+                    fontFamily: "Times New Roman",
+                    fontSize: 15,
+                    marginLeft: 20,
+                    width: 280
                   }}
                 >
                   {emailError}
                 </Label>
               ) : null}
-              <TextInput
-                style={styles.input}
-                onBlur={this.validatePassword}
-                placeholder="Enter password"
-                placeholderTextColor="rgba(255,255,255,0.8)"
-                returnKeyType="go"
-                secureTextEntry
-                autoCorrect={false}
-                ref={"txtPassword"}
-                onChangeText={text => this.handleChange("password", text)}
-              />
+              <Item style={{ borderBottomColor: "blue" }}>
+                <TextInput
+                  style={styles.input}
+                  onBlur={this.validatePassword}
+                  placeholder="Enter password"
+                  placeholderTextColor="rgba(255,255,255,0.8)"
+                  returnKeyType="go"
+                  secureTextEntry={passworHidden}
+                  autoCorrect={false}
+                  ref={"txtPassword"}
+                  onChangeText={text => this.handleChange("password", text)}
+                />
+                {passworHidden ? (
+                  <Icon
+                    name="md-lock"
+                    style={{ color: "white" }}
+                    onPress={this.toggleShowPassword}
+                  />
+                ) : (
+                  <Icon
+                    name="md-unlock"
+                    style={{ color: "white" }}
+                    onPress={this.toggleShowPassword}
+                  />
+                )}
+              </Item>
               {passwordError ? (
                 <Label
                   style={{
                     color: "red",
                     fontWeight: "bold",
-                    marginTop: -10,
+                    marginTop: -20,
                     fontStyle: "italic",
-                    fontFamily: "Times New Roman"
+                    fontFamily: "Times New Roman",
+                    fontSize: 15,
+                    marginLeft: 20,
+                    width: 280
                   }}
                 >
                   {passwordError}
                 </Label>
               ) : null}
+
               <TouchableOpacity style={styles.buttonContainer}>
                 <Text
                   onPress={() => {
@@ -177,7 +215,7 @@ class Login extends Component {
                 onPress={() => this.props.navigation.navigate("Sigup")}
                 style={styles.account}
               >
-                Don't have an account yet? click here to create one
+                New here? create account
               </Text>
             </View>
           </View>
@@ -219,17 +257,22 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    width: 350,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    width: 280,
+    backgroundColor: "blue",
     color: "#FFF",
     marginBottom: 20,
     paddingHorizontal: 15,
-    borderRadius: 10
+    borderColor: "blue",
+    borderWidth: 1,
+    borderBottomColor: "white",
+    marginLeft: 20
   },
   buttonContainer: {
     backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
-    borderRadius: 10
+    borderRadius: 5,
+    width: 280,
+    marginLeft: 20
   },
   buttonText: {
     textAlign: "center",
@@ -242,7 +285,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 34,
     opacity: 0.9,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    marginLeft: 30
   },
   forgot: {
     marginLeft: 200,

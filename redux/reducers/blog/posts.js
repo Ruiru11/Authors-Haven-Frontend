@@ -14,7 +14,6 @@ const PostListReducer = (state = initialState, action = {}) => {
     case LISTPOST:
       return { ...state, errors: "", loading: true };
     case LISTPOST_SUCCESS:
-      console.log("Action from reducer>>>>", action)
       return { ...state, posts: action.payload.posts, loading: false };
     case LISTPOST_FAILURE:
       return { ...state, posts: [], loading: false };

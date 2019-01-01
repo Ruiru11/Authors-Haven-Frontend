@@ -15,6 +15,7 @@ import {
   Keyboard,
   TouchableOpacity
 } from "react-native";
+import { Label, Item, Icon, Container } from "native-base";
 
 class Sigup extends Component {
   static propTypes = {
@@ -27,12 +28,30 @@ class Sigup extends Component {
     Username: "",
     email: "",
     password: "",
-    passwordConfirm: ""
+    passwordConfirm: "",
+    passwordError: false,
+    PasswordMatchError: false,
+    emailError: false,
+    UsernameError: false,
+    passwordHidden: true,
+    passwordConfirmHidden: true
   };
 
   componentDidMount() {}
 
   handleChange = (name, value) => {
+    if (name === "email") {
+      this.setState({ emailError: "" });
+    }
+    if (name === "password") {
+      this.setState({ passwordError: "" });
+    }
+    if (name === "passwordConfirm") {
+      this.setState({ PasswordMatchError: "" });
+    }
+    if (name === "Username") {
+      this.setState({ UsernameError: "" });
+    }
     this.setState({ [name]: value });
   };
 
@@ -44,7 +63,68 @@ class Sigup extends Component {
 
     results({ ...this.state, navigate });
   };
+
+  validatePassword = () => {
+    const { password, passwordError } = this.state;
+    if (password.length < 6) {
+      this.setState({
+        passwordError: "Password must be more than 4 characters"
+      });
+    }
+  };
+
+  validateEmail = () => {
+    const { email, emailError } = this.state;
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const fem = re.test(String(email).toLowerCase());
+    if (fem === false) {
+      this.setState({
+        emailError: "Email is invalid"
+      });
+    }
+  };
+
+  validateUsername = () => {
+    const { Username, UsernameError } = this.state;
+    if (Username.length < 3) {
+      this.setState({
+        UsernameError: "Username must have atleast three characters"
+      });
+    }
+  };
+
+  validatePasswordMatch = () => {
+    const { password, passwordConfirm, PasswordMatchError } = this.state;
+    if (password != passwordConfirm) {
+      this.setState({
+        PasswordMatchError: "Passwords do not match"
+      });
+    }
+  };
+
+  togglePasswordShow = () => {
+    const { passwordHidden } = this.state;
+    this.setState({
+      passwordHidden: !passwordHidden
+    });
+  };
+
+  passwordConfirmToggle = () => {
+    const { passwordConfirmHidden } = this.state;
+    this.setState({
+      passwordConfirmHidden: !passwordConfirmHidden
+    });
+  };
+
   render() {
+    const {
+      UsernameError,
+      passwordError,
+      PasswordMatchError,
+      emailError,
+      passwordHidden,
+      passwordConfirmHidden
+    } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -64,12 +144,28 @@ class Sigup extends Component {
                 style={styles.input}
                 placeholder="Enter username"
                 placeholderTextColor="rgba(255,255,255,0.8)"
-                keyboardType="numeric"
+                keyboardType="email-address"
                 returnKeyType="next"
                 autoCorrect={false}
+                onBlur={this.validateUsername}
                 onChangeText={text => this.handleChange("Username", text)}
-                onSubmitEditing={() => this.refs.txtPassword.focus()}
+                onSubmitEditing={() => this.refs.txtemail.focus()}
               />
+              {UsernameError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -10,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman",
+                    marginLeft: 20,
+                    width: 280
+                  }}
+                >
+                  {UsernameError}
+                </Label>
+              ) : null}
               <TextInput
                 style={styles.input}
                 placeholder="Enter email"
@@ -77,31 +173,112 @@ class Sigup extends Component {
                 keyboardType="email-address"
                 returnKeyType="next"
                 autoCorrect={false}
+                ref={"txtemail"}
+                onBlur={this.validateEmail}
                 onChangeText={text => this.handleChange("email", text)}
                 onSubmitEditing={() => this.refs.txtPassword.focus()}
               />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter password"
-                placeholderTextColor="rgba(255,255,255,0.8)"
-                returnKeyType="go"
-                secureTextEntry
-                autoCorrect={false}
-                ref={"txtPassword"}
-                onChangeText={text => this.handleChange("password", text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Confirm  password"
-                placeholderTextColor="rgba(255,255,255,0.8)"
-                returnKeyType="go"
-                secureTextEntry
-                autoCorrect={false}
-                ref={"txtPassword"}
-                onChangeText={text =>
-                  this.handleChange("passwordConfirm", text)
-                }
-              />
+              {emailError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -10,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman",
+                    marginLeft: 20,
+                    width: 280
+                  }}
+                >
+                  {emailError}
+                </Label>
+              ) : null}
+              <Item style={{ borderBottomColor: "blue" }}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter password"
+                  placeholderTextColor="rgba(255,255,255,0.8)"
+                  returnKeyType="go"
+                  secureTextEntry={passwordHidden}
+                  autoCorrect={false}
+                  ref={"txtPassword"}
+                  onBlur={this.validatePassword}
+                  onChangeText={text => this.handleChange("password", text)}
+                  onSubmitEditing={() => this.refs.txtPasswordConfirm.focus()}
+                />
+                {passwordHidden ? (
+                  <Icon
+                    name="md-lock"
+                    style={{ color: "white" }}
+                    onPress={this.togglePasswordShow}
+                  />
+                ) : (
+                  <Icon
+                    name="md-unlock"
+                    style={{ color: "white" }}
+                    onPress={this.togglePasswordShow}
+                  />
+                )}
+              </Item>
+
+              {passwordError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -10,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman",
+                    marginLeft: 20,
+                    width: 280
+                  }}
+                >
+                  {passwordError}
+                </Label>
+              ) : null}
+              <Item style={{ borderBottomColor: "blue" }}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm  password"
+                  placeholderTextColor="rgba(255,255,255,0.8)"
+                  returnKeyType="go"
+                  secureTextEntry={passwordConfirmHidden}
+                  autoCorrect={false}
+                  ref={"txtPasswordConfirm"}
+                  onBlur={this.validatePasswordMatch}
+                  onChangeText={text =>
+                    this.handleChange("passwordConfirm", text)
+                  }
+                />
+                {passwordConfirmHidden ? (
+                  <Icon
+                    name="md-lock"
+                    style={{ color: "white" }}
+                    onPress={this.passwordConfirmToggle}
+                  />
+                ) : (
+                  <Icon
+                    name="md-unlock"
+                    style={{ color: "white" }}
+                    onPress={this.passwordConfirmToggle}
+                  />
+                )}
+              </Item>
+              {PasswordMatchError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -20,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman",
+                    marginLeft: 20,
+                    width: 280
+                  }}
+                >
+                  {PasswordMatchError}
+                </Label>
+              ) : null}
               <TouchableOpacity style={styles.buttonContainer}>
                 <Text
                   onPress={() => {
@@ -143,26 +320,31 @@ const styles = StyleSheet.create({
     opacity: 0.9
   },
   infoContainer: {
-    marginTop: 5,
+    marginTop: -7,
     left: 0,
     right: 0,
     bottom: 0,
     height: 400,
-    padding: 20
+    paddingTop: -500
   },
   input: {
-    height: 50,
-    width: 350,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    height: 40,
+    width: 280,
+    backgroundColor: "blue",
     color: "#FFF",
     marginBottom: 20,
     paddingHorizontal: 10,
-    borderRadius: 10
+    borderColor: "blue",
+    borderWidth: 1,
+    borderBottomColor: "white",
+    marginLeft: 20
   },
   buttonContainer: {
     backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
-    borderRadius: 10
+    borderRadius: 5,
+    width: 280,
+    marginLeft: 20
   },
   buttonText: {
     textAlign: "center",

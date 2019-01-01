@@ -1,21 +1,22 @@
 import {
-  GETONEPOST,
-  GETONEPOST_SUCCESS,
-  GETONEPOST_FAILURE
+  GET_ONEPOST,
+  GET_ONEPOST_SUCCESS,
+  GET_ONEPOST_FAILURE
 } from "../../../constants/blog/onePost";
 
-export const getOnePost = () => {
+export const getOnePost = slug => {
   return {
-    type: GETONEPOST
+    type: GET_ONEPOST,
+    payload: slug
   };
 };
 
-export const getOnePostsuccess = payload => ({
-  type: GETONEPOST_SUCCESS,
-  payload
+export const getOnePostsuccess = slug => ({
+  type: GET_ONEPOST_SUCCESS,
+  payload: slug
 });
 
 export const getOnePostfailure = error => ({
-  type: GETONEPOST_FAILURE,
-  error
+  type: GET_ONEPOST_FAILURE,
+  payload: error
 });

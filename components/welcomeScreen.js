@@ -24,15 +24,15 @@ class welcomeScreen extends Component {
 
   _bootstrapAsync = async () => {
     const token = await getToken();
-    console.log(token, "token from welcome screen");
     const {
       navigation: { navigate }
     } = this.props;
     this.setState({ loading: true });
     setTimeout(() => {
-      navigate(token ? "Dashboard" : "Login");
       this.setState({ loading: false });
-    }, 5000);
+      
+      navigate(token ? "Dashboard" : "Login");
+    }, 4000);
   };
   render() {
     const { loading } = this.state;

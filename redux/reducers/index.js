@@ -4,7 +4,9 @@ import signup from "./auth/signup";
 import forgotpass from "./auth/forgotpassword";
 import listPosts from "./blog/posts";
 import onePost from "./blog/onePost";
-import likePost from "./blog/likePost";
+import getComment from "./blog/comments";
+import profile from "./profile/profile";
+import getProfile from "./profile/getProfile";
 
 export default combineReducers({
   login,
@@ -12,5 +14,7 @@ export default combineReducers({
   forgotpass,
   listPosts,
   onePost,
-  likePost
+  getComment,
+  profile,
+  getProfile
 });

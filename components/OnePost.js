@@ -1,9 +1,20 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { likePost } from "../redux/actions/blog/likePost";
+import { getOnePost } from "../redux/actions/blog/onePost";
+import { getComment, postComment } from "../redux/actions/blog/comments";
 import { PropTypes } from "prop-types";
 import moment from "moment";
 
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TextInput
+} from "react-native";
 
 import {
   Card,
@@ -14,7 +25,12 @@ import {
   Right,
   Button,
   Icon,
-  Header
+  Header,
+  Form,
+  Item,
+  Input,
+  Label,
+  Textarea
 } from "native-base";
 import { TouchableHighlight } from "react-native-gesture-handler";
 
@@ -24,40 +40,39 @@ class OnePost extends Component {
     this.state = {
       post: {},
       comments: [],
-      isloading: true
+      isloading: true,
+      content: ""
     };
   }
 
-  getComments = () => {
-    const id = this.props.navigation.state.params._id;
-    axios.get(`http://10.0.2.2:4000/api/comments/all/${id}`).then(res => {
-      this.setState({
-        comments: res.data
-      });
-    });
-  };
-
-  getPosts = () => {
+  likeArticle = () => {
+    const { results } = this.props;
     const slug = this.props.navigation.state.params.slug;
-    axios.get(`http://10.0.2.2:4000/api/v1/posts/${slug}`).then(res => {
-      console.log(res.data, "xxxxxxxxxxxxcvbncxvbnmncxdj");
-      this.setState({
-        post: res.data,
-        isLoading: false
-      });
-    });
+    results(slug);
   };
 
   componentDidMount() {
-    this.getComments();
-    this.getPosts();
+    const { getOnePostAction, getCommentAction } = this.props;
+    const slug = this.props.navigation.state.params.slug;
+    getOnePostAction(slug);
+    const id = this.props.navigation.state.params._id;
+    getCommentAction(id);
   }
 
-  handleGetOne = async () => {};
+  handleChange = (name, value) => {
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = () => {
+    const { postCommentAction } = this.props;
+    const id = this.props.navigation.state.params._id;
+    const { content } = this.state;
+    postCommentAction({ content, id });
+    this.setState({ content: "" });
+  };
 
   render() {
-    const { post, comments } = this.state;
-    console.log(comments, "comments");
+    const { event, comments } = this.props;
     return (
       <ScrollView>
         <Header style={{ backgroundColor: "#366cc2" }}>
@@ -91,7 +106,7 @@ class OnePost extends Component {
                       fontSize: 15
                     }}
                   >
-                    {post.title}
+                    {event.title}
                   </Text>
                   <Text
                     style={{
@@ -101,7 +116,7 @@ class OnePost extends Component {
                     }}
                   >
                     {" "}
-                    Author: {post.author && post.author.Username}
+                    Author: {event.author && event.author.Username}
                   </Text>
                   <Text
                     style={{
@@ -113,7 +128,7 @@ class OnePost extends Component {
                     note
                   >
                     Published on:
-                    {moment(post.date, "YYYYMMDD").format("MMMM Do YYYY")}
+                    {moment(event.date, "YYYYMMDD").format("MMMM Do YYYY")}
                   </Text>
                 </Body>
               </Left>
@@ -132,15 +147,17 @@ class OnePost extends Component {
                   alignItems: "center"
                 }}
               >
-                <TouchableHighlight onPress={() => console.log("hae")}>
+                <TouchableHighlight underlayColor="red" activeOpacity={1}>
                   <Icon
                     name="md-thumbs-up"
                     style={{ color: "blue" }}
-                    // onPress={() => console.log("hae")}
+                    onPress={this.likeArticle}
+                    underlayColor="red"
+                    activeOpacity={1}
                   />
                 </TouchableHighlight>
                 <Text style={{ color: "black", fontWeight: "bold" }}>
-                  :{post.like_count}
+                  :{event.like_count}
                 </Text>
               </View>
               <View
@@ -152,22 +169,38 @@ class OnePost extends Component {
               >
                 <Icon name="md-eye" style={{ color: "blue" }} />
                 <Text style={{ color: "black", fontWeight: "bold" }}>
-                  :{post.View}
+                  :{event.View}
                 </Text>
               </View>
             </CardItem>
             <CardItem>
               <Body>
-                <Text style={{ fontWeight: "bold" }}>{post.content}</Text>
+                <Text style={{ fontWeight: "bold" }}>{event.content}</Text>
               </Body>
             </CardItem>
             <CardItem>
               <Text
                 style={{ fontWeight: "bold", color: "black", fontSize: 13 }}
               >
-                Comments: {post.comment_count}
+                Comments: {event.comment_count}
               </Text>
             </CardItem>
+            <Item regular>
+              <Input
+                value={this.state.content}
+                rowSpan={5}
+                placeholder="make a comment"
+                onChangeText={text => this.handleChange("content", text)}
+              />
+              <Button
+                success
+                onPress={() => {
+                  this.handleSubmit();
+                }}
+              >
+                <Text> comment </Text>
+              </Button>
+            </Item>
             <Card
               style={{
                 borderTopColor: "black",
@@ -194,7 +227,7 @@ class OnePost extends Component {
 
                         <Body>
                           <Text style={{ fontWeight: "bold", color: "black" }}>
-                            {comment.author.Username}
+                            {comment && comment.author.Username}
                           </Text>
                           <Text style={{ fontWeight: "bold" }}>
                             {comment.content}
@@ -216,8 +249,8 @@ class OnePost extends Component {
                 ))}
             </Card>
 
-            {post.tags &&
-              post.tags.map(tag => (
+            {event.tags &&
+              event.tags.map(tag => (
                 <CardItem key={tag} style={{ height: 5 }}>
                   <Text style={{ color: "black", fontWeight: "bold" }}>
                     #{tag}
@@ -240,4 +273,22 @@ const styles = StyleSheet.create({
   }
 });
 
-export default OnePost;
+const mapStateToProps = state => {
+  return {
+    likePost: state.likePost,
+    event: state.onePost.post,
+    comments: state.getComment.comments
+  };
+};
+
+const mapDispatchToProps = {
+  results: likePost,
+  getOnePostAction: getOnePost,
+  getCommentAction: getComment,
+  postCommentAction: postComment
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OnePost);

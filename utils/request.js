@@ -10,13 +10,13 @@ const entry = axios.create({
   baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
-    ...authHeaders()
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkM2ViZjM5Y2ZhZjM2MmRlMWJlMmRiYyIsIlVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1NjQzOTMyOTMsImV4cCI6MTU5NTk1MDIxOX0.jgxJ7n-zjmL4B0asNtXwgvHiLyivWS80KGzGjBogFRE"
   }
 });
 
 const api = {
   loginUser: data => {
-    console.log(data, "data imetumwa");
     return entry.post("/api/users/login", data);
   },
   signupUser: data => {
@@ -28,8 +28,34 @@ const api = {
   listPosts: () => {
     return entry.get("/api/v1/posts");
   },
-  onePost: (slug) => {
-    return entry.get(`/api/v1/posts/${slug}`);
+  likePost: payload => {
+    return entry.post(`/api/like/post/${payload}`);
+  },
+  getPost: payload => {
+    return entry.get(`/api/v1/posts/${payload}`);
+  },
+  getComment: payload => {
+    return entry.get(`/api/comments/all/${payload}`);
+  },
+  postComment: payload => {
+    const { content, id } = payload;
+    const payloadToBackend = {
+      content
+    };
+    return entry.post(`/api/posts/comments/${id}`, payloadToBackend);
+  },
+  profile: data => {
+    const { firstName, lastName, bio, interest } = data;
+    const payloadToBackend = {
+      firstName,
+      lastName,
+      bio,
+      interest
+    };
+    return entry.post("/api/user/profile/create", payloadToBackend);
+  },
+  getProfile: () => {
+    return entry.get("/api/user/profile/view");
   }
 };
 export default api;

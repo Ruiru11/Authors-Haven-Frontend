@@ -5,17 +5,15 @@ import { LIKE_POST } from "../../../constants/blog/likePost";
 import { likePostsuccess, likePostfailure } from "../../actions/blog/likePost";
 import api from "../../../utils/request";
 
-export function* likePostAsync() {
+export function* likePostAsync({ payload }) {
   try {
-    const response = yield call(api.onePost());
-    console.log("respnse????", response);
-    yield put(getOnePostsuccess({ type: "GETONEPOST_SUCCESS" }));
+    const response = yield call(api.likePost, payload);
+    yield put(likePostsuccess({ type: "LIKE_POST_SUCCESS", ...response.data }));
   } catch (error) {
-    console.log("error????", error);
 
     yield put(
-      getOnePostfailure({
-        type: "GETONEPOST_FAILURE",
+      likePostfailure({
+        type: "LIKE_POST_FAILURE",
         errors: error.request.response.message
       })
     );

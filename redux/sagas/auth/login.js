@@ -10,15 +10,14 @@ export function* loginAsync({ payload }) {
   try {
     const { navigate } = payload;
     const response = yield call(api.loginUser, payload);
-    console.log(response.data.token,"token set on login")
     setToken(response.data.token);
     yield put(loginsuccess());
     Toast.show("Login successful welcome", Toast.SHORT, Toast.TOP, Successtyle);
     navigate("Dashboard");
   } catch (error) {
     Toast.show(
-      "An error occured Please check your login details again",
-      Toast.SHORT,
+      "Your Email or Password is incorrect.Kindly try again",
+      Toast.LONG,
       Toast.TOP,
       Errorstyle
     );

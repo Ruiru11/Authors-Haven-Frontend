@@ -4,18 +4,19 @@ import {
   LIKE_POST_FAILURE
 } from "../../../constants/blog/likePost";
 
-export const likePost = () => {
+export const likePost = slug => {
   return {
-    type: LIKE_POST
+    type: LIKE_POST,
+    payload: slug
   };
 };
 
-export const likePostsuccess = payload => ({
+export const likePostsuccess = slug => ({
   type: LIKE_POST_SUCCESS,
-  payload
+  payload: slug
 });
 
 export const likePostfailure = error => ({
   type: LIKE_POST_FAILURE,
-  error
+  payload: error
 });

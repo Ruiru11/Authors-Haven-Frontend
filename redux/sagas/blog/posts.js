@@ -8,12 +8,9 @@ import api from "../../../utils/request";
 export function* listPostsAsync() {
   try {
     const response = yield call(api.listPosts);
-    console.log("respnse????", response);
     const posts = response.data;
     yield put(Listpostsuccess({ type: "LISTPOST_SUCCESS", posts }));
   } catch (error) {
-    console.log("error????", error);
-
     yield put(
       Listpostfailure({
         type: "LISTPOST_FAILURE",

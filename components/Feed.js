@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import { View, Text, Image } from "react-native";
-// import { Card, ListItem, Button, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { ListPost } from "../redux/actions/blog/posts";
@@ -31,25 +29,27 @@ class Feed extends Component {
     const { ListPostAction } = this.props;
     ListPostAction();
     isloading: false;
-    console.log(">?>?>?>?>?>?>", ListPostAction());
   }
 
-  handleGetOne = slug => {
-    console.log(slug);
-  };
+  handleGetOne = slug => {};
 
   render() {
-    console.log("component props.proooo", this.props);
     const { events } = this.props;
     return (
       <ScrollView>
         <View>
           {!events ? (
-            <div>Loading........</div>
+            <Text>Loading........</Text>
           ) : (
             events.map(event => (
               <Card key={event._id}>
-                <CardItem>
+                <CardItem
+                  header
+                  button
+                  onPress={() =>
+                    this.props.navigation.navigate("OnePost", { ...event })
+                  }
+                >
                   <Left>
                     <Thumbnail source={require("../images/crypto.jpg")} />
                     <Body>
@@ -111,7 +111,9 @@ class Feed extends Component {
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <Text style={{ fontWeight: "bold" }}>{event.content}</Text>
+                    <Text numberOfLines={3} style={{ fontWeight: "bold" }}>
+                      {event.content}
+                    </Text>
                   </Body>
                 </CardItem>
                 {event.tags.map(tag => (
@@ -121,14 +123,6 @@ class Feed extends Component {
                     </Text>
                   </CardItem>
                 ))}
-                <Button
-                  transparent
-                  onPress={() =>
-                    this.props.navigation.navigate("OnePost", { ...event })
-                  }
-                >
-                  <Icon name="open" style={{ color: "purple" }} />
-                </Button>
               </Card>
             ))
           )}
@@ -147,7 +141,6 @@ const styles = StyleSheet.create({
 });
 
 export const mapStateToProps = state => {
-  console.log(state, "sxxxxxxxxxxxxxxxxx");
   return {
     events: state.listPosts.posts
   };
