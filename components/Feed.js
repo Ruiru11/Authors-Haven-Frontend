@@ -67,7 +67,7 @@ class Feed extends Component {
                           color: "black",
                           fontWeight: "bold",
                           fontStyle: "italic",
-                          fontSize:10
+                          fontSize: 10
                         }}
                         note
                       >
@@ -84,18 +84,34 @@ class Feed extends Component {
                   />
                 </CardItem>
                 <CardItem style={{ height: 20 }}>
-                  <Text style={{ fontWeight: "bold", color: "black" }}>
-                    Comments :{event.comment.length}
-                  </Text>
-                </CardItem>
-                <CardItem style={{ height: 20 }}>
-                  <Text style={{ fontWeight: "bold", color: "black" }}>
-                    Views :{event.View}
-                  </Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Icon name="md-chatboxes" />
+                    <Text style={{ color: "black", fontWeight: "bold" }}>
+                      :{event.comment.length}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 5,
+                      flexDirection: "row",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Icon name="md-eye" />
+                    <Text style={{ color: "black", fontWeight: "bold" }}>
+                      :{event.View}
+                    </Text>
+                  </View>
                 </CardItem>
                 <CardItem>
                   <Body>
-                    <Text>{event.content}</Text>
+                    <Text style={{ fontWeight: "bold" }}>{event.content}</Text>
                   </Body>
                 </CardItem>
                 {event.tags.map(tag => (

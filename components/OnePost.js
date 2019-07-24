@@ -16,19 +16,29 @@ import {
   Icon,
   Header
 } from "native-base";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 class OnePost extends Component {
   constructor() {
     super();
     this.state = {
       post: {},
+      comments: [],
       isloading: true
     };
   }
 
-  componentDidMount() {
+  getComments = () => {
+    const id = this.props.navigation.state.params._id;
+    axios.get(`http://10.0.2.2:4000/api/comments/all/${id}`).then(res => {
+      this.setState({
+        comments: res.data
+      });
+    });
+  };
+
+  getPosts = () => {
     const slug = this.props.navigation.state.params.slug;
-    console.log("slug", slug);
     axios.get(`http://10.0.2.2:4000/api/v1/posts/${slug}`).then(res => {
       console.log(res.data, "xxxxxxxxxxxxcvbncxvbnmncxdj");
       this.setState({
@@ -36,16 +46,18 @@ class OnePost extends Component {
         isLoading: false
       });
     });
+  };
+
+  componentDidMount() {
+    this.getComments();
+    this.getPosts();
   }
 
   handleGetOne = async () => {};
 
   render() {
-    const { post } = this.state;
-    console.log("secomnd dcreeem", this.state);
-    const rew = post.author;
-    console.log("reeeeeeeeew", rew);
-
+    const { post, comments } = this.state;
+    console.log(comments, "comments");
     return (
       <ScrollView>
         <Header style={{ backgroundColor: "#366cc2" }}>
@@ -58,7 +70,7 @@ class OnePost extends Component {
               fontSize: 18
             }}
           >
-            Authors' Haven
+            Post
           </Text>
         </Header>
         <View>
@@ -68,7 +80,6 @@ class OnePost extends Component {
                 <Icon name="md-arrow-round-back" />
               </Button>
             </CardItem>
-
             <CardItem>
               <Left>
                 <Thumbnail source={require("../images/crypto.jpg")} />
@@ -114,40 +125,105 @@ class OnePost extends Component {
               />
             </CardItem>
             <CardItem>
-              <Text style={{ fontWeight: "bold", color: "black" }}>
-                Likes: {post.like_count}
-              </Text>
-            </CardItem>
-            <CardItem style={{ height: 20 }}>
-              <Text style={{ fontWeight: "bold", color: "black" }}>
-                Comments :{post.comment_count}
-              </Text>
-            </CardItem>
-            <CardItem style={{ height: 20 }}>
-              <Text style={{ fontWeight: "bold", color: "black" }}>
-                Views :{post.View}
-              </Text>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center"
+                }}
+              >
+                <TouchableHighlight onPress={() => console.log("hae")}>
+                  <Icon
+                    name="md-thumbs-up"
+                    style={{ color: "blue" }}
+                    // onPress={() => console.log("hae")}
+                  />
+                </TouchableHighlight>
+                <Text style={{ color: "black", fontWeight: "bold" }}>
+                  :{post.like_count}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 5,
+                  flexDirection: "row",
+                  alignItems: "center"
+                }}
+              >
+                <Icon name="md-eye" style={{ color: "blue" }} />
+                <Text style={{ color: "black", fontWeight: "bold" }}>
+                  :{post.View}
+                </Text>
+              </View>
             </CardItem>
             <CardItem>
               <Body>
-                <Text>{post.content}</Text>
+                <Text style={{ fontWeight: "bold" }}>{post.content}</Text>
               </Body>
             </CardItem>
-            {/* {event.tags.map(tag => (
-              <CardItem key={tag} style={{ height: 5 }}>
-                <Text style={{ color: "black", fontWeight: "bold" }}>
-                  #{tag}
-                </Text>
-              </CardItem>
-            ))} */}
-            {/* <Button
-              transparent
-              onPress={() =>
-                this.props.navigation.navigate("OnePost", { ...event })
-              }
+            <CardItem>
+              <Text
+                style={{ fontWeight: "bold", color: "black", fontSize: 13 }}
+              >
+                Comments: {post.comment_count}
+              </Text>
+            </CardItem>
+            <Card
+              style={{
+                borderTopColor: "black",
+                borderTopWidth: 5,
+                borderBottomColor: "black",
+                borderBottomWidth: 3
+              }}
             >
-              <Icon name="open" style={{ color: "purple" }} />
-            </Button> */}
+              {comments &&
+                comments.map(comment => (
+                  <Card key={comment._id}>
+                    <CardItem
+                      style={{
+                        backgroundColor: "transparent",
+                        borderBottomColor: "black",
+                        borderBottomWidth: 1,
+                        borderRadius: 0,
+                        borderColor: "black",
+                        margin: 3
+                      }}
+                    >
+                      <Left>
+                        <Thumbnail source={require("../images/crypto.jpg")} />
+
+                        <Body>
+                          <Text style={{ fontWeight: "bold", color: "black" }}>
+                            {comment.author.Username}
+                          </Text>
+                          <Text style={{ fontWeight: "bold" }}>
+                            {comment.content}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "black",
+                              fontStyle: "italic",
+                              fontSize: 9,
+                              fontWeight: "bold"
+                            }}
+                          >
+                            {moment(comment.CreatedAt, "YYYYMMDD").fromNow()}
+                          </Text>
+                        </Body>
+                      </Left>
+                    </CardItem>
+                  </Card>
+                ))}
+            </Card>
+
+            {post.tags &&
+              post.tags.map(tag => (
+                <CardItem key={tag} style={{ height: 5 }}>
+                  <Text style={{ color: "black", fontWeight: "bold" }}>
+                    #{tag}
+                  </Text>
+                </CardItem>
+              ))}
           </Card>
         </View>
       </ScrollView>

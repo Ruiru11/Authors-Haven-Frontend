@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView
 } from "react-native";
+import { Label } from "native-base";
 
 class Login extends Component {
   static propTypes = {
@@ -28,7 +29,9 @@ class Login extends Component {
 
   state = {
     email: "",
-    password: ""
+    password: "",
+    passwordError: false,
+    emailError: false
   };
 
   componentDidMount() {
@@ -46,20 +49,51 @@ class Login extends Component {
   };
 
   handleChange = (name, value) => {
+    if (name === "email") {
+      this.setState({ emailError: "" });
+    }
+    if (name === "password") {
+      this.setState({ passwordError: "" });
+    }
     this.setState({ [name]: value });
   };
 
   handleSubmit = () => {
-    const {
-      results,
-      navigation: { navigate }
-    } = this.props;
+    this.validatePassword();
+    const { passwordError, emailError } = this.state;
+    if (!passwordError && !emailError) {
+      const {
+        results,
+        navigation: { navigate }
+      } = this.props;
 
-    results({ ...this.state, navigate });
+      results({ ...this.state, navigate });
+    }
+  };
+
+  validatePassword = () => {
+    const { password, passwordError } = this.state;
+    if (password.length < 5) {
+      this.setState({
+        passwordError: "Password must be more than 4 characters"
+      });
+    }
+  };
+
+  validateEmail = () => {
+    const { email, emailError } = this.state;
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const fem = re.test(String(email).toLowerCase());
+    if (fem === false) {
+      this.setState({
+        emailError: "Email is invalid"
+      });
+    }
   };
 
   render() {
     const { navigation } = this.props;
+    const { passwordError, emailError } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -71,7 +105,7 @@ class Login extends Component {
             <View style={styles.logoContainer}>
               <Image
                 style={styles.logo}
-                source={require("../images/logo.png")}
+                source={require("../images/brown.png")}
               />
             </View>
             <View style={styles.infoContainer}>
@@ -88,11 +122,26 @@ class Login extends Component {
                 keyboardType="email-address"
                 returnKeyType="next"
                 autoCorrect={false}
+                onBlur={this.validateEmail}
                 onChangeText={text => this.handleChange("email", text)}
                 onSubmitEditing={() => this.refs.txtPassword.focus()}
               />
+              {emailError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -10,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman"
+                  }}
+                >
+                  {emailError}
+                </Label>
+              ) : null}
               <TextInput
                 style={styles.input}
+                onBlur={this.validatePassword}
                 placeholder="Enter password"
                 placeholderTextColor="rgba(255,255,255,0.8)"
                 returnKeyType="go"
@@ -101,12 +150,24 @@ class Login extends Component {
                 ref={"txtPassword"}
                 onChangeText={text => this.handleChange("password", text)}
               />
+              {passwordError ? (
+                <Label
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: -10,
+                    fontStyle: "italic",
+                    fontFamily: "Times New Roman"
+                  }}
+                >
+                  {passwordError}
+                </Label>
+              ) : null}
               <TouchableOpacity style={styles.buttonContainer}>
                 <Text
-                  // onPress={() => {
-                  //   this.handleSubmit();
-                  // }}
-                  onPress={() => this.props.navigation.navigate("Dashboard")}
+                  onPress={() => {
+                    this.handleSubmit();
+                  }}
                   style={styles.buttonText}
                 >
                   LOGIN
@@ -129,7 +190,7 @@ class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(32, 53, 70)",
+    backgroundColor: "rgb(0, 0, 255)",
     flexDirection: "column"
   },
   logoContainer: {
@@ -166,21 +227,22 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   buttonContainer: {
-    backgroundColor: "#f7c744",
+    backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
     borderRadius: 10
   },
   buttonText: {
     textAlign: "center",
-    color: "rgb(32, 53, 70)",
+    color: "white",
     fontWeight: "bold",
     fontSize: 18
   },
   account: {
-    color: "black",
-    fontSize: 18,
+    color: "white",
+    fontSize: 20,
     marginTop: 34,
-    opacity: 0.9
+    opacity: 0.9,
+    fontWeight: "bold"
   },
   forgot: {
     marginLeft: 200,

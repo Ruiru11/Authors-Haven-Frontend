@@ -56,7 +56,7 @@ class Sigup extends Component {
             <View style={styles.logoContainer}>
               <Image
                 style={styles.logo}
-                source={require("../images/logo.png")}
+                source={require("../images/brown.png")}
               />
             </View>
             <View style={styles.infoContainer}>
@@ -123,7 +123,7 @@ class Sigup extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(32, 53, 70)",
+    backgroundColor: "rgb(0, 0, 255)",
     flexDirection: "column"
   },
   logoContainer: {
@@ -160,13 +160,13 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   buttonContainer: {
-    backgroundColor: "#f7c744",
+    backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
     borderRadius: 10
   },
   buttonText: {
     textAlign: "center",
-    color: "rgb(32, 53, 70)",
+    color: "white",
     fontWeight: "bold",
     fontSize: 18
   }

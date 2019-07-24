@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Bubbles, DoubleBounce, Bars, Pulse } from "react-native-loader";
+import { getToken } from "../utils/keys";
 import {
   StyleSheet,
   Text,
@@ -13,7 +15,27 @@ import {
 } from "react-native";
 
 class welcomeScreen extends Component {
+  state = {
+    loading: false
+  };
+  componentDidMount() {
+    this._bootstrapAsync();
+  }
+
+  _bootstrapAsync = async () => {
+    const token = await getToken();
+    console.log(token, "token from welcome screen");
+    const {
+      navigation: { navigate }
+    } = this.props;
+    this.setState({ loading: true });
+    setTimeout(() => {
+      navigate(token ? "Dashboard" : "Login");
+      this.setState({ loading: false });
+    }, 5000);
+  };
   render() {
+    const { loading } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
@@ -22,37 +44,16 @@ class welcomeScreen extends Component {
           onPress={Keyboard.dismiss}
         >
           <View style={styles.logoContainer}>
+            {loading ? (
+              <View style={{ marginTop: `50 %` }}>
+                <Bars size={15} color="#FFF" />
+              </View>
+            ) : null}
             <View style={styles.logoContainer}>
               <Image
                 style={styles.logo}
-                source={require("../images/logo.png")}
+                source={require("../images/brown.png")}
               />
-            </View>
-            <Text style={styles.title}>
-              Welcome to authors Haven You can either
-            </Text>
-            <View style={styles.infoContainer}>
-              <TouchableOpacity style={styles.buttonContainer}>
-                <Text
-                  onPress={() => {
-                    this.props.navigation.navigate("Login");
-                  }}
-                  style={styles.buttonText}
-                >
-                  LOGIN
-                </Text>
-              </TouchableOpacity>
-              <Text style={styles.text}>or</Text>
-              <TouchableOpacity style={styles.buttonContainernew}>
-                <Text
-                  onPress={() => {
-                    this.props.navigation.navigate("Sigup");
-                  }}
-                  style={styles.buttonText}
-                >
-                  Signup
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -64,7 +65,7 @@ class welcomeScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(32, 53, 70)",
+    backgroundColor: "rgb(0, 0, 255)",
     flexDirection: "column"
   },
   logoContainer: {
@@ -84,34 +85,38 @@ const styles = StyleSheet.create({
     height: 400
   },
   buttonContainer: {
-    backgroundColor: "#f7c744",
+    backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
-    borderRadius: 10,
-    paddingHorizontal: 20
+    borderRadius: 4,
+    paddingHorizontal: 20,
+    borderBottomColor: "white"
   },
   buttonContainernew: {
-    backgroundColor: "#f7c744",
+    backgroundColor: "rgb(2, 2, 97)",
     paddingVertical: 15,
-    borderRadius: 10,
+    borderRadius: 4,
     paddingHorizontal: 20,
-    marginTop: 40
+    marginTop: 40,
+    borderColor: "white"
   },
   buttonText: {
     textAlign: "center",
-    color: "rgb(32, 53, 70)",
+    color: "white",
     fontWeight: "bold",
     fontSize: 18,
     paddingHorizontal: 20
   },
   text: {
     justifyContent: "center",
-    fontSize: 20,
+    fontSize: 30,
     marginTop: 5,
-    color: "red"
+    color: "white",
+    fontWeight: "bold"
   },
   title: {
     fontSize: 25,
-    color: "blue"
+    color: "white",
+    fontWeight: "bold"
   }
 });
 
