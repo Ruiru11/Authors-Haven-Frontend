@@ -7,6 +7,7 @@ import onePost from "./blog/onePost";
 import getComment from "./blog/comments";
 import profile from "./profile/profile";
 import getProfile from "./profile/getProfile";
+import getUsersPosts from "./profile/posts";
 
 export default combineReducers({
   login,
@@ -16,5 +17,6 @@ export default combineReducers({
   onePost,
   getComment,
   profile,
-  getProfile
+  getProfile,
+  getUsersPosts
 });

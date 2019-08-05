@@ -11,7 +11,7 @@ const entry = axios.create({
   headers: {
     "Content-Type": "application/json",
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkM2ViZjM5Y2ZhZjM2MmRlMWJlMmRiYyIsIlVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE1NjQzOTMyOTMsImV4cCI6MTU5NTk1MDIxOX0.jgxJ7n-zjmL4B0asNtXwgvHiLyivWS80KGzGjBogFRE"
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkM2ViODIyY2ZhZjM2MmRlMWJlMmRiOCIsIlVzZXJuYW1lIjoicnVpcnUiLCJpYXQiOjE1NjQzOTI5MDcsImV4cCI6MTU5NTk0OTgzM30.MzThyFuZaP2RGnQknck7_U-iPKxqgIIJBVHEsR9qmZ0"
   }
 });
 
@@ -56,6 +56,9 @@ const api = {
   },
   getProfile: () => {
     return entry.get("/api/user/profile/view");
+  },
+  getUserPosts: () => {
+    return entry.get("/api/v1/posts/users/Articles");
   }
 };
 export default api;

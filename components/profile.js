@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import moment from "moment";
 import { connect } from "react-redux";
 import { getProfile } from "../redux/actions/profile/profile";
+import { getUserPosts } from "../redux/actions/profile/posts";
 import {
   View,
   Text,
@@ -28,6 +30,7 @@ import {
 import Divider from "react-native-divider";
 
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { format } from "url";
 
 var { width, height } = Dimensions.get("window");
 class ProfilePage extends Component {
@@ -36,12 +39,14 @@ class ProfilePage extends Component {
   };
 
   componentDidMount() {
-    const { ProfileAction } = this.props;
-    ProfileAction();
+    const { ProfileAction, UserPostsAction } = this.props;
+    ProfileAction();t
+    UserPostsAction();
   }
   render() {
-    const { profile } = this.props;
-    console.log("profile profile ", profile);
+    const { profile, userPost } = this.props;
+    const postData = userPost.posts.posts;
+    console.log("postDats", postData);
     return (
       <ScrollView>
         {profile.length === 0 ? (
@@ -182,11 +187,17 @@ class ProfilePage extends Component {
                   </View>
                 </View>
                 <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
-                  <Text style={{ fontWeight: "bold", color: "black" }}>
-                    {profile.firstName}
+                  <Text
+                    style={{ fontWeight: "bold", color: "black", fontSize: 17 }}
+                  >
+                    {profile.firstName} {profile.lastName}
                   </Text>
-                  <Text style={{ color: "black" }}>Hae there</Text>
-                  <Text style={{ color: "black" }}>Asimple ui</Text>
+                  <Text style={{ fontWeight: "100", color: "black" }}>
+                    {profile.interest}
+                  </Text>
+                  <Text style={{ fontWeight: "100", color: "black" }}>
+                    {profile.bio}
+                  </Text>
                 </View>
               </View>
               <Divider
@@ -197,41 +208,60 @@ class ProfilePage extends Component {
               >
                 My Articles
               </Divider>
-
-              <List
-                style={{
-                  borderWidth: 2,
-                  margin: 5,
-                  borderBottomColor: "blue",
-                  borderColor: "white"
-                }}
-              >
-                <ListItem avatar>
-                  <Left>
-                    <Image
-                      style={{ height: 75, width: 75 }}
-                      source={require("../images/america.jpg")}
-                    />
-                  </Left>
-                  <Body>
-                    <Text
+              {console.log("this is the data ", postData)}
+              <ScrollView>
+                {!postData ? (
+                  <View>
+                    <Text>hae</Text>
+                  </View>
+                ) : (
+                  postData.map(post => (
+                    <List
                       style={{
-                        color: "black",
-                        fontWeight: "bold",
-                        fontSize: 18
+                        borderWidth: 2,
+                        margin: 5,
+                        borderBottomColor: "blue",
+                        borderColor: "white"
                       }}
+                      key={post._id}
                     >
-                      Ruiru Erastus
-                    </Text>
-                    <Text style={{ color: "black" }} note>
-                      just a start ...
-                    </Text>
-                  </Body>
-                  <Right>
-                    <Text note>3:43 pm</Text>
-                  </Right>
-                </ListItem>
-              </List>
+                      <ListItem avatar>
+                        <Left>
+                          <Image
+                            style={{ height: 75, width: 75 }}
+                            source={require("../images/america.jpg")}
+                          />
+                        </Left>
+                        <Body>
+                          <Text
+                            style={{
+                              color: "black",
+                              fontWeight: "bold",
+                              fontSize: 18
+                            }}
+                          >
+                            {post.title}
+                          </Text>
+                          <Text
+                            numberOfLines={2}
+                            style={{ color: "black" }}
+                            note
+                          >
+                            {post.content}
+                          </Text>
+                        </Body>
+                        <Right>
+                          <Text note>
+                            {moment(post.date, "YYYYMMDD").format(
+                              "MMMM Do YYYY"
+                            )}
+                          </Text>
+                        </Right>
+                      </ListItem>
+                    </List>
+                  ))
+                )}
+              </ScrollView>
             </Content>
           </Container>
         )}
@@ -243,12 +273,14 @@ class ProfilePage extends Component {
 const mapStateToProps = state => {
   console.log("state state state", state);
   return {
-    profile: state.getProfile.profile
+    profile: state.getProfile.profile,
+    userPost: state.getUsersPosts
   };
 };
 
 const mapDispatchToProps = {
-  ProfileAction: getProfile
+  ProfileAction: getProfile,
+  UserPostsAction: getUserPosts
 };
 
 export default connect(

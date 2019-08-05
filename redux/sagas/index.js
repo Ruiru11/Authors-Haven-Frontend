@@ -10,6 +10,7 @@ import { watchCommentFetchPass } from "./blog/comments";
 import { watchPostCommentPass } from "./blog/postComment";
 import { watchProfile } from "./profile/profile";
 import { watchgetProflePass } from "./profile/getProfile";
+import { watchgetUsersPostsPass } from "./profile/posts";
 
 export default function* root() {
   yield all([
@@ -22,6 +23,7 @@ export default function* root() {
     fork(watchCommentFetchPass),
     fork(watchPostCommentPass),
     fork(watchProfile),
-    fork(watchgetProflePass)
+    fork(watchgetProflePass),
+    fork(watchgetUsersPostsPass)
   ]);
 }
