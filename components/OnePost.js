@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { likePost } from "../redux/actions/blog/likePost";
 import { getOnePost } from "../redux/actions/blog/onePost";
 import { getComment, postComment } from "../redux/actions/blog/comments";
+import { getViews } from "../redux/actions/profile/views";
+
 import { PropTypes } from "prop-types";
 import moment from "moment";
 
@@ -52,9 +54,11 @@ class OnePost extends Component {
   };
 
   componentDidMount() {
-    const { getOnePostAction, getCommentAction } = this.props;
+    const { getOnePostAction, getCommentAction, PostViewsAction } = this.props;
     const slug = this.props.navigation.state.params.slug;
+    console.log("slug slug slug slug", slug);
     getOnePostAction(slug);
+    PostViewsAction(slug);
     const id = this.props.navigation.state.params._id;
     getCommentAction(id);
   }
@@ -72,7 +76,8 @@ class OnePost extends Component {
   };
 
   render() {
-    const { event, comments } = this.props;
+    const { event, comments, Views } = this.props;
+    const ViewsCount = Views.View;
     return (
       <ScrollView>
         <Header style={{ backgroundColor: "#366cc2" }}>
@@ -169,7 +174,7 @@ class OnePost extends Component {
               >
                 <Icon name="md-eye" style={{ color: "blue" }} />
                 <Text style={{ color: "black", fontWeight: "bold" }}>
-                  :{event.View}
+                  :{ViewsCount}
                 </Text>
               </View>
             </CardItem>
@@ -277,7 +282,8 @@ const mapStateToProps = state => {
   return {
     likePost: state.likePost,
     event: state.onePost.post,
-    comments: state.getComment.comments
+    comments: state.getComment.comments,
+    Views: state.getPostsViews.views
   };
 };
 
@@ -285,7 +291,8 @@ const mapDispatchToProps = {
   results: likePost,
   getOnePostAction: getOnePost,
   getCommentAction: getComment,
-  postCommentAction: postComment
+  postCommentAction: postComment,
+  PostViewsAction: getViews
 };
 
 export default connect(

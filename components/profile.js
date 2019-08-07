@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import moment from "moment";
 import { connect } from "react-redux";
 import { getProfile } from "../redux/actions/profile/profile";
 import { getUserPosts } from "../redux/actions/profile/posts";
@@ -9,7 +8,8 @@ import {
   StyleSheet,
   Image,
   Dimensions,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from "react-native";
 import {
   Container,
@@ -28,9 +28,9 @@ import {
   Title
 } from "native-base";
 import Divider from "react-native-divider";
+import moment from "moment";
 
 import EntypoIcon from "react-native-vector-icons/Entypo";
-import { format } from "url";
 
 var { width, height } = Dimensions.get("window");
 class ProfilePage extends Component {
@@ -40,13 +40,12 @@ class ProfilePage extends Component {
 
   componentDidMount() {
     const { ProfileAction, UserPostsAction } = this.props;
-    ProfileAction();t
+    ProfileAction();
     UserPostsAction();
   }
   render() {
     const { profile, userPost } = this.props;
     const postData = userPost.posts.posts;
-    console.log("postDats", postData);
     return (
       <ScrollView>
         {profile.length === 0 ? (
@@ -208,11 +207,11 @@ class ProfilePage extends Component {
               >
                 My Articles
               </Divider>
-              {console.log("this is the data ", postData)}
               <ScrollView>
                 {!postData ? (
-                  <View>
-                    <Text>hae</Text>
+                  <View style={[styles.container, styles.horizontal]}>
+                    <ActivityIndicator size="large" color="#68228B" />
+                    <ActivityIndicator size="large" color="#68228B" />
                   </View>
                 ) : (
                   postData.map(post => (
@@ -251,7 +250,7 @@ class ProfilePage extends Component {
                           </Text>
                         </Body>
                         <Right>
-                          <Text note>
+                          <Text style={{ color: "black" }} note>
                             {moment(post.date, "YYYYMMDD").format(
                               "MMMM Do YYYY"
                             )}
@@ -270,8 +269,19 @@ class ProfilePage extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10
+  }
+});
+
 const mapStateToProps = state => {
-  console.log("state state state", state);
   return {
     profile: state.getProfile.profile,
     userPost: state.getUsersPosts

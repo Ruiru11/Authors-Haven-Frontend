@@ -14,7 +14,6 @@ const getUsersPostsReducer = (state = initialState, action = {}) => {
     case GET_USERS_POSTS:
       return { ...state, errors: "", loading: true };
     case GET_USERS_POSTS_SUCCESS:
-      console.log("actionaction", action.payload);
       return { ...state, posts: action.payload, loading: false };
     case GET_USERS_POSTS_FAILURE:
       return { ...state, posts: [], loading: false };

@@ -59,6 +59,9 @@ const api = {
   },
   getUserPosts: () => {
     return entry.get("/api/v1/posts/users/Articles");
+  },
+  getPostsViews: payload => {
+    return entry.post(`/api/v1/posts/view/${payload}`);
   }
 };
 export default api;

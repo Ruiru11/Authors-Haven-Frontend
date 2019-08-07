@@ -16,7 +16,6 @@ export function* getProfileAsync() {
       getProfileSuccess({ type: "GET_PROFILE_SUCCESS", ...response.data })
     );
   } catch (error) {
-    console.log("errrrror", error);
     yield put(
       getProfileFailure({
         type: "GET_PROFILE_FAILURE",

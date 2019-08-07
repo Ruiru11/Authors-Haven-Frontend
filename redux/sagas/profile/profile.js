@@ -6,7 +6,6 @@ import { profileSucess, profilefailure } from "../../actions/profile/profile";
 import api from "../../../utils/request";
 
 export function* ProfileAsync({ payload }) {
-  console.log("payload", payload);
   try {
     const { navigate } = payload;
     const response = yield call(api.profile, payload);
@@ -19,7 +18,6 @@ export function* ProfileAsync({ payload }) {
     );
     navigate("Profile");
   } catch (error) {
-    console.log("errrrrrrrr", error);
     Toast.show(
       "We could not create your profile",
       Toast.LONG,

@@ -4,7 +4,14 @@ import { PropTypes } from "prop-types";
 import { ListPost } from "../redux/actions/blog/posts";
 import moment from "moment";
 
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  ActivityIndicator
+} from "react-native";
 
 import {
   Card,
@@ -31,15 +38,22 @@ class Feed extends Component {
     isloading: false;
   }
 
-  handleGetOne = slug => {};
-
   render() {
     const { events } = this.props;
     return (
       <ScrollView>
         <View>
-          {!events ? (
-            <Text>Loading........</Text>
+          {console.log("events", events.message)}
+          {events.message === "No articles were found" ? (
+            <View style={[styles.container2, styles.horizontal]}>
+              <ActivityIndicator size="large" color="#68228B" />
+              <ActivityIndicator size="large" color="#68228B" />
+              <Text
+                style={{ color: "black", fontSize: 20, fontWeight: "bold" }}
+              >
+                No articles found
+              </Text>
+            </View>
           ) : (
             events.map(event => (
               <Card key={event._id}>
@@ -137,6 +151,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  container2: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  horizontal: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10
   }
 });
 

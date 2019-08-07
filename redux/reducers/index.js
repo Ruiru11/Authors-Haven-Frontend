@@ -8,6 +8,7 @@ import getComment from "./blog/comments";
 import profile from "./profile/profile";
 import getProfile from "./profile/getProfile";
 import getUsersPosts from "./profile/posts";
+import getPostsViews from "./profile/views";
 
 export default combineReducers({
   login,
@@ -18,5 +19,6 @@ export default combineReducers({
   getComment,
   profile,
   getProfile,
-  getUsersPosts
+  getUsersPosts,
+  getPostsViews
 });
